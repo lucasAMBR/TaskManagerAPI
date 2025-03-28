@@ -1,0 +1,59 @@
+# Binário e Build
+bin/
+obj/
+out/
+publish/
+
+# Configurações de Usuário do Visual Studio
+.vs/
+*.user
+*.suo
+*.vcxproj.user
+*.pdb
+
+# Configurações do Rider e do Resharper
+.idea/
+*.sln.iml
+*.DotSettings.user
+
+# Arquivos de Logs e Debug
+logs/
+*.log
+*.nlog
+*.tlog
+*.cache
+*.svclog
+
+# Configuração do Docker
+**/docker-compose.override.yml
+**/.dockerignore
+
+# Secrets e Chaves de Configuração
+secrets.json
+appsettings.Local.json
+appsettings.Development.json
+
+# Dependências e Pacotes Restaurados
+node_modules/
+bower_components/
+packages/
+wwwroot/lib/
+
+# Arquivos de Cache do NuGet
+.nuget/
+*.nupkg
+project.lock.json
+artifacts/
+
+# Gerados pelo Entity Framework Core
+Migrations/
+
+# Certificados de Desenvolvimento
+*.pfx
+*.cer
+*.key
+
+# Arquivos do sistema operacional
+Thumbs.db
+ehthumbs.db
+.DS_Store
