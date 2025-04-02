@@ -22,8 +22,9 @@ namespace Models
         [MaxLength(50)]
         public required string Departament { get; set; }
 
+        [Required]
         [MaxLength(500)]
-        public string? Description { get; set; }
+        public required string Description { get; set; }
 
         public List<Task> Tasks { get; set; } = new();
     }

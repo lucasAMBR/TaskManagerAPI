@@ -13,6 +13,10 @@ namespace Models
         public required string Description { get; set; }
 
         [Required]
+        [MaxLength(20)]
+        public required string Priority {get; set;}
+
+        [Required]
         public DateTime InitialDate { get; set; }
 
         [ForeignKey("Assignee")]
