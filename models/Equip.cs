@@ -1,21 +1,27 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
     public class Equip
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
+        [JsonIgnore]
         public List<Dev> Members { get; set; } = new();
 
         [ForeignKey("Leader")]
-        public int LeaderId { get; set; }
+        public string LeaderId { get; set; } = string.Empty;
+
+        [JsonIgnore]
         public required Dev Leader { get; set; }
 
         [ForeignKey("Project")]
-        public int ProjectId { get; set; }
+        public string ProjectId { get; set; } = string.Empty;
+
+        [JsonIgnore]
         public required Project Project { get; set; }
 
         [Required]
@@ -26,6 +32,7 @@ namespace Models
         [MaxLength(500)]
         public required string Description { get; set; }
 
+        [JsonIgnore]
         public List<Task> Tasks { get; set; } = new();
     }
 }

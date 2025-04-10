@@ -1,12 +1,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
     public class Task
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(500)]
@@ -14,13 +15,20 @@ namespace Models
 
         [Required]
         [MaxLength(20)]
-        public required string Priority {get; set;}
+        public required string Priority { get; set; }
 
         [Required]
         public DateTime InitialDate { get; set; }
 
+        [ForeignKey("Equip")]
+        public string EquipId { get; set; } = string.Empty;
+
+        [JsonIgnore]
+        public required Equip Equip { get; set; }
+
         [ForeignKey("Assignee")]
-        public int AssigneeId { get; set; }
+        public string AssigneeId { get; set; } = string.Empty;
+
         public required Dev Assignee { get; set; }
 
         [Required]

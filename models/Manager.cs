@@ -6,7 +6,7 @@ namespace Models
     public class Manager
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
@@ -17,7 +17,7 @@ namespace Models
         public required string Email { get; set; }
 
         [Required]
-        [JsonIgnore]
-        public required string Password { get; set; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+        public required string Password { get; set;}
     }
 }

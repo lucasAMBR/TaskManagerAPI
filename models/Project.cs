@@ -1,11 +1,13 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
     public class Project
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
@@ -18,6 +20,12 @@ namespace Models
         [MaxLength]
         public string? Goals { get; set; }
 
+        [ForeignKey("Manager")]
+        public string ManagerId { get; set; } = string.Empty;
+
+        public required Manager Manager { get; set; }
+
+        [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();
     }
 }

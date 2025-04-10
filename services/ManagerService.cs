@@ -15,11 +15,12 @@ namespace Services{
             return await _managerRepository.GetAllAsync();
         }
 
-        public async Task<Manager> GetManagerByIdAsync(int id){
+        public async Task<Manager> GetManagerByIdAsync(string id){
             return await _managerRepository.GetByIdAsync(id);
         }
 
         public async Task<Manager> CreateManagerAsync(Manager manager){
+            manager.Id = $"MNG-{manager.Name.Substring(0, 2)}{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
             manager.Password = PasswordHelper.HashPassword(manager, manager.Password);
             
             return await _managerRepository.AddAsync(manager);
@@ -29,7 +30,7 @@ namespace Services{
             return await _managerRepository.UpdateAsync(manager);
         }
 
-        public async Task<bool> DeleteManagerAsync(int id){
+        public async Task<bool> DeleteManagerAsync(string id){
             return await _managerRepository.DeleteAsync(id);
         }
     }

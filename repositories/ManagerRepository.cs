@@ -16,7 +16,7 @@ namespace Repositories{
             return await _context.Managers.ToListAsync();
         }
 
-        public async Task<Manager> GetByIdAsync(int id){
+        public async Task<Manager> GetByIdAsync(string id){
             var manager = await _context.Managers.FindAsync(id) ?? throw new Exception($"UserID {id} not found!!");
 
             return manager;
@@ -34,7 +34,7 @@ namespace Repositories{
             return manager;
         }
 
-        public async Task<bool> DeleteAsync(int id){
+        public async Task<bool> DeleteAsync(string id){
             var manager = await _context.Managers.FindAsync(id);
             if(manager == null) return false;
 

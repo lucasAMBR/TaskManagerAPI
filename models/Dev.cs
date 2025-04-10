@@ -1,12 +1,12 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
     public class Dev
     {
         [Key]
-        public int Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [Required]
         [MaxLength(100)]
@@ -19,8 +19,10 @@ namespace Models
         [Required]
         public required string Password { get; set; }
 
+        [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();
-        
+
+        [JsonIgnore]
         public List<Task> Tasks { get; set; } = new();
     }
 }

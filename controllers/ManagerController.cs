@@ -23,7 +23,7 @@ namespace Controllers{
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Manager>> GetById(int id){
+        public async Task<ActionResult<Manager>> GetById(string id){
             var manager = await _managerService.GetManagerByIdAsync(id);
 
             return Ok(manager);
@@ -37,7 +37,7 @@ namespace Controllers{
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Manager manager){
+        public async Task<IActionResult> Update(string id, Manager manager){
             if(id != manager.Id){
                 return BadRequest("the URL id doens't match with the id in the request body!!");
             }
@@ -52,7 +52,7 @@ namespace Controllers{
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id){
+        public async Task<IActionResult> Delete(string id){
             var deleted = await _managerService.DeleteManagerAsync(id);
 
             if(!deleted){
