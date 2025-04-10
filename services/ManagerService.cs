@@ -20,7 +20,7 @@ namespace Services{
         }
 
         public async Task<Manager> CreateManagerAsync(Manager manager){
-            manager.Id = $"MNG-{manager.Name.Substring(0, 2)}{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
+            manager.Id = $"MNG-{manager.Name.Substring(0, 2)}@{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
             manager.Password = PasswordHelper.HashPassword(manager, manager.Password);
             
             return await _managerRepository.AddAsync(manager);

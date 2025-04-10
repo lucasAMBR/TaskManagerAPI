@@ -1,3 +1,4 @@
+using DTOs;
 using Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -16,24 +17,40 @@ namespace Controllers{
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Manager>>> GetAll(){
+        public async Task<ActionResult<IEnumerable<ManagerResponseDTO>>> GetAll(){
             var managers = await _managerService.GetAllManagersAsync();
 
-            return Ok(managers);
+            var managersListDTO = managers.Select(manager =>new ManagerResponseDTO{
+                Id = manager.Id,
+                Name = manager.Name,
+                Email = manager.Email
+            }).ToList();
+
+            return Ok(managersListDTO);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Manager>> GetById(string id){
+        public async Task<ActionResult<ManagerResponseDTO>> GetById(string id){
             var manager = await _managerService.GetManagerByIdAsync(id);
 
-            return Ok(manager);
+            return Ok(new ManagerResponseDTO {
+                Id = manager.Id,
+                Name = manager.Name,
+                Email = manager.Email
+            });
         }
 
         [HttpPost]
-        public async Task<ActionResult<Manager>> Create(Manager manager){
+        public async Task<ActionResult<ManagerResponseDTO>> Create(Manager manager){
             var created = await _managerService.CreateManagerAsync(manager);
 
-            return CreatedAtAction(nameof(GetById), new {id = created.Id}, created);
+            var responseDTO = new ManagerResponseDTO {
+                Id = created.Id,
+                Name = created.Name,
+                Email = created.Email
+            };
+
+            return CreatedAtAction(nameof(GetById), new {id = created.Id}, responseDTO);
         }
 
         [HttpPut("{id}")]
