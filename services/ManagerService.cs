@@ -1,5 +1,6 @@
 using Interfaces;
 using Models;
+using Utils;
 
 namespace Services{
     public class ManagerService : IManagerService{
@@ -19,6 +20,8 @@ namespace Services{
         }
 
         public async Task<Manager> CreateManagerAsync(Manager manager){
+            manager.Password = PasswordHelper.HashPassword(manager, manager.Password);
+            
             return await _managerRepository.AddAsync(manager);
         }
 
