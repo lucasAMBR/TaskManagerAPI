@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Models
 {
@@ -16,6 +17,7 @@ namespace Models
         public required string Email { get; set; }
 
         [Required]
+        [JsonIgnore]
         public required string Password { get; set; }
     }
 }
