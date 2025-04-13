@@ -22,6 +22,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 builder.Services.AddScoped<IManagerService, ManagerService>();
 
+builder.Services.AddScoped<IDevRepository, DevRepository>();
+builder.Services.AddScoped<IDevService, DevService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();

@@ -17,7 +17,6 @@ namespace Models
         public required string Email { get; set; }
 
         [Required]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public required string Password { get; set;}
     }
 }

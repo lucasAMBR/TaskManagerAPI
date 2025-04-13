@@ -73,7 +73,7 @@ namespace Controllers{
             var deleted = await _managerService.DeleteManagerAsync(id);
 
             if(!deleted){
-                return NotFound("User nor Found!!");
+                return NotFound("User not found!!");
             }
 
             return NoContent();
