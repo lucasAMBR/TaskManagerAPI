@@ -23,7 +23,8 @@ namespace Models
         [ForeignKey("Manager")]
         public string ManagerId { get; set; } = string.Empty;
 
-        public required Manager Manager { get; set; }
+        [JsonIgnore]
+        public Manager? Manager { get; set; }
 
         [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();

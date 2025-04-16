@@ -25,6 +25,12 @@ builder.Services.AddScoped<IManagerService, ManagerService>();
 builder.Services.AddScoped<IDevRepository, DevRepository>();
 builder.Services.AddScoped<IDevService, DevService>();
 
+builder.Services.AddScoped<IProjectRepository, ProjectRepository>();
+builder.Services.AddScoped<IProjectService, ProjectService>();
+
+builder.Services.AddScoped<IEquipRepository, EquipRepository>();
+builder.Services.AddScoped<IEquipService, EquipService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
