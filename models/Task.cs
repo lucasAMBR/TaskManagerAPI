@@ -23,13 +23,9 @@ namespace Models
         [ForeignKey("Equip")]
         public string EquipId { get; set; } = string.Empty;
 
-        [JsonIgnore]
-        public required Equip Equip { get; set; }
-
         [ForeignKey("Assignee")]
-        public string AssigneeId { get; set; } = string.Empty;
-
-        public required Dev Assignee { get; set; }
+        public string? AssigneeId { get; set; } = string.Empty;
+        public Dev? Assignee { get; set; }
 
         [Required]
         [MaxLength(50)]

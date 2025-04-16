@@ -24,9 +24,6 @@ namespace Models
         public string ManagerId { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public Manager? Manager { get; set; }
-
-        [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();
     }
 }
