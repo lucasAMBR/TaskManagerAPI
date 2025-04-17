@@ -31,5 +31,6 @@ namespace Services{
         public async Task<bool> DeleteEquipAsync(string id){
             return await _equipRepository.DeleteAsync(id);
         }
+        
     }
 }

@@ -11,8 +11,11 @@ namespace Controllers{
 
         private readonly IEquipService _equipService;
 
-        public EquipController(IEquipService equipService){
+        private readonly IEquipAndDevService _equipAndDevService;
+
+        public EquipController(IEquipService equipService, IEquipAndDevService equipAndDevService){
             _equipService = equipService;
+            _equipAndDevService = equipAndDevService;
         }
 
         [HttpGet]
@@ -58,5 +61,15 @@ namespace Controllers{
             return NoContent();
         }
 
+        [HttpPost("{equipId}/add/{devId}")]
+        public async Task<IActionResult> AddDevToEquip(string equipId, string devId){
+            var addResult = await _equipAndDevService.AddDevToEquip(equipId, devId);
+
+            if(!addResult){
+                return BadRequest("Invalid Equip ID or Dev ID");
+            }
+
+            return NoContent();
+        }
     }
 }

@@ -16,13 +16,13 @@ namespace Models
         public string LeaderId { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public required Dev Leader { get; set; }
+        public Dev? Leader { get; set; }
 
         [ForeignKey("Project")]
         public string ProjectId { get; set; } = string.Empty;
 
         [JsonIgnore]
-        public required Project Project { get; set; }
+        public Project? Project { get; set; }
 
         [Required]
         [MaxLength(50)]
