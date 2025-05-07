@@ -1,6 +1,9 @@
+using System.Text;
 using Data;
 using Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Repositories;
 using Services;
 
@@ -19,6 +22,18 @@ if(string.IsNullOrEmpty(connectionString)){
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 23))));
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters{
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("chave-muito-super-secreta-temporaria-12345"))
+    };
+});
+
+builder.Services.AddAuthorization();
+
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 builder.Services.AddScoped<IManagerService, ManagerService>();
 
@@ -34,6 +49,8 @@ builder.Services.AddScoped<IEquipService, EquipService>();
 builder.Services.AddScoped<IEquipAndDevRepository, EquipAndDevRepository>();
 builder.Services.AddScoped<IEquipAndDevService, EquipAndDevService>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddControllers();
 
 var app = builder.Build();
@@ -46,4 +63,6 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseHttpsRedirection();
+app.UseAuthentication();
+app.UseAuthorization();
 app.Run();
