@@ -7,9 +7,12 @@ using Microsoft.IdentityModel.Tokens;
 namespace Services{
     public static class TokenService{
         public static string GenerateToken(string userId){
+            var role = userId.Substring(0, 3);
+
             var claims = new[]
             {
-                new Claim(ClaimTypes.NameIdentifier, userId) 
+                new Claim(ClaimTypes.NameIdentifier, userId),
+                new Claim(ClaimTypes.Role, role)
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("chave-muito-super-secreta-temporaria-12345"));

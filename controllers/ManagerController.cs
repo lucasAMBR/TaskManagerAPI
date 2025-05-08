@@ -1,5 +1,6 @@
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using Services;
@@ -15,7 +16,7 @@ namespace Controllers{
         public ManagerController(IManagerService managerService){
             _managerService = managerService;
         }
-
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ManagerResponseDTO>>> GetAll(){
             var managers = await _managerService.GetAllManagersAsync();
@@ -42,6 +43,7 @@ namespace Controllers{
 
         [HttpPost]
         public async Task<ActionResult<ManagerResponseDTO>> Create(Manager manager){
+            
             var created = await _managerService.CreateManagerAsync(manager);
 
             var responseDTO = new ManagerResponseDTO {
