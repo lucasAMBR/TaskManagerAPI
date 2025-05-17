@@ -6,7 +6,7 @@ namespace Interfaces{
         Task<List<Project>> GetAllProjectsAsync();
         Task<Project> GetProjectByIdAsync(string id);
         Task<Project> CreateProjectAsync(string id, CreateProjectDTO project);
-        Task<Project> UpdateProjectAsync(Project project);
+        Task<Project> UpdateProjectAsync(string projectId, UpdateProjectDTO project);
         Task<bool> DeleteProjectAsync(string id);
     }
 }

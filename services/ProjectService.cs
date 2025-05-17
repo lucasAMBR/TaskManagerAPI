@@ -33,8 +33,25 @@ namespace Services{
             return await _projectRepository.CreateProjectAsync(newProject);
         }
 
-        public async Task<Project> UpdateProjectAsync(Project project){
-            return await _projectRepository.UpdateProjectAsync(project);
+        public async Task<Project> UpdateProjectAsync(string projectId, UpdateProjectDTO project){
+            var foundedProject = await _projectRepository.GetProjectByIdAsync(projectId);
+
+            if (project.Name != null)
+            {
+                foundedProject.Name = project.Name;
+            }
+
+            if (project.Goals != null)
+            {
+                foundedProject.Goals = project.Goals;
+            }
+
+            if (project.Description != null)
+            {
+                foundedProject.Description = project.Description;
+            }
+
+            return await _projectRepository.UpdateProjectAsync(foundedProject);
         }
 
         public async Task<bool> DeleteProjectAsync(string id){

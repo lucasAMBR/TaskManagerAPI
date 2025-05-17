@@ -1,5 +1,6 @@
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Models;
 using Utils;
 
@@ -20,7 +21,13 @@ namespace Services{
             return await _managerRepository.GetByIdAsync(id);
         }
 
-        public async Task<Manager> CreateManagerAsync(CreateManagerDTO manager){
+        public async Task<bool> VerifyEmail(string email)
+        {
+            return await _managerRepository.VerifyEmailAsync(email);
+        }
+
+        public async Task<Manager> CreateManagerAsync(CreateManagerDTO manager)
+        {
 
             var newManager = new Manager
             {

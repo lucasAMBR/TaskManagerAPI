@@ -44,7 +44,12 @@ namespace Controllers{
 
         [HttpPost]
         public async Task<ActionResult<ManagerResponseDTO>> Create(CreateManagerDTO manager){
-            
+
+            if (await _managerService.VerifyEmail(manager.Email))
+            {
+                return Conflict("Email Already in use");
+            }
+
             var created = await _managerService.CreateManagerAsync(manager);
 
             var responseDTO = new ManagerResponseDTO {

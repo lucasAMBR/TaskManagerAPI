@@ -22,7 +22,13 @@ namespace Repositories{
             return manager;
         }
 
-        public async Task<Manager> AddAsync(Manager manager){
+        public async Task<bool> VerifyEmailAsync(string email)
+        {
+            return await _context.Managers.AnyAsync(u => u.Email == email);
+        }
+
+        public async Task<Manager> AddAsync(Manager manager)
+        {
             _context.Managers.Add(manager);
             await _context.SaveChangesAsync();
             return manager;

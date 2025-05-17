@@ -45,14 +45,27 @@ namespace Controllers{
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Project>> Update(string id, Project project){
-            if(id != project.Id){
-                return BadRequest("the URL id doens't match with the id in the request body!!");
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<Project>> Update(string id, UpdateProjectDTO project)
+        {
+            var managerTokenFromBody = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            Project foundedProject = await _projectService.GetProjectByIdAsync(id);
+
+            if (managerTokenFromBody == null)
+            {
+                return Unauthorized("Only managers can update a project");
             }
 
-            var updated = await _projectService.UpdateProjectAsync(project);
+            if (foundedProject.ManagerId != managerTokenFromBody)
+            {
+                return Unauthorized("You only can update your projects");
+            }
 
-            if(updated == null){
+            var updated = await _projectService.UpdateProjectAsync(id, project);
+
+            if (updated == null)
+            {
                 return NotFound("Project not Found!!");
             }
 
@@ -60,10 +73,27 @@ namespace Controllers{
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id){
+        [Authorize(Roles = "MNG")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var managerTokenFromBody = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            Project foundedProject = await _projectService.GetProjectByIdAsync(id);
+
+            if (managerTokenFromBody == null)
+            {
+                return Unauthorized("Only managers can delete a project");
+            }
+
+            if (foundedProject.ManagerId != managerTokenFromBody)
+            {
+                return Unauthorized("You only can delete your projects");
+            }
+
             var deleted = await _projectService.DeleteProjectAsync(id);
 
-            if(!deleted){
+            if (!deleted)
+            {
                 return NotFound("Project not found!!");
             }
 
