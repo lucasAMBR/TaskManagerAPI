@@ -78,10 +78,20 @@ namespace Controllers{
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id){
+        [Authorize(Roles = "MNG")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (managerIdFromToken != id)
+            {
+                Forbid("You Cannot delete someone account");
+            }
+
             var deleted = await _managerService.DeleteManagerAsync(id);
 
-            if(!deleted){
+            if (!deleted)
+            {
                 return NotFound("User not found!!");
             }
 
