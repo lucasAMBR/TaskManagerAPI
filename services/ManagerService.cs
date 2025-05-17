@@ -1,3 +1,4 @@
+using DTOs;
 using Interfaces;
 using Models;
 using Utils;
@@ -19,15 +20,35 @@ namespace Services{
             return await _managerRepository.GetByIdAsync(id);
         }
 
-        public async Task<Manager> CreateManagerAsync(Manager manager){
-            manager.Id = $"MNG-{manager.Name.Substring(0, 2)}@{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
-            manager.Password = PasswordHelper.HashPassword(manager, manager.Password);
-            
-            return await _managerRepository.AddAsync(manager);
+        public async Task<Manager> CreateManagerAsync(CreateManagerDTO manager){
+
+            var newManager = new Manager
+            {
+                Id = $"MNG-{manager.Name.Substring(0, 2)}@{DateTime.Now.ToString("yyyyMMddHHmmssff")}",
+                Name = manager.Name,
+                Email = manager.Email,
+                Password = manager.Password
+            };
+
+            newManager.Password = PasswordHelper.HashPassword(newManager, manager.Password);
+
+            return await _managerRepository.AddAsync(newManager);
         }
 
-        public async Task<Manager> UpdateManagerAsync(Manager manager){
-            return await _managerRepository.UpdateAsync(manager);
+        public async Task<Manager> UpdateManagerAsync(string managerId, UpdateManagerDTO manager){
+            var foundedManager = await _managerRepository.GetByIdAsync(managerId);
+
+            if (manager.Name != null)
+            {
+                foundedManager.Name = manager.Name;
+            }
+
+            if (manager.Password != null)
+            {
+                foundedManager.Password = PasswordHelper.HashPassword(foundedManager, manager.Password);
+            }
+
+            return await _managerRepository.UpdateAsync(foundedManager);
         }
 
         public async Task<bool> DeleteManagerAsync(string id){

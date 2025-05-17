@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using DTOs;
 using Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -42,7 +43,7 @@ namespace Controllers{
         }
 
         [HttpPost]
-        public async Task<ActionResult<ManagerResponseDTO>> Create(Manager manager){
+        public async Task<ActionResult<ManagerResponseDTO>> Create(CreateManagerDTO manager){
             
             var created = await _managerService.CreateManagerAsync(manager);
 
@@ -56,14 +57,20 @@ namespace Controllers{
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(string id, Manager manager){
-            if(id != manager.Id){
-                return BadRequest("the URL id doens't match with the id in the request body!!");
+        [Authorize(Roles = "MNG")]
+        public async Task<IActionResult> Update(string id, UpdateManagerDTO manager)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (id != managerIdFromToken)
+            {
+                return BadRequest("you cannot update someone information!!");
             }
 
-            var updated = await _managerService.UpdateManagerAsync(manager);
+            var updated = await _managerService.UpdateManagerAsync(id, manager);
 
-            if(updated == null){
+            if (updated == null)
+            {
                 return NotFound("User not Found!!");
             }
 

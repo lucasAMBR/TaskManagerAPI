@@ -30,5 +30,7 @@ namespace Models
         [Required]
         [MaxLength(50)]
         public required string Status { get; set; }
+
+        public Task() { }
     }
 }

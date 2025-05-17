@@ -25,5 +25,7 @@ namespace Models
 
         [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();
+
+        public Project() { }
     }
 }

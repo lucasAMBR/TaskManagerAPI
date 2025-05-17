@@ -24,5 +24,7 @@ namespace Models
 
         [JsonIgnore]
         public List<Task> Tasks { get; set; } = new();
+
+        public Dev(){}
     }
 }
