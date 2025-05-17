@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Security.Claims;
+using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -26,10 +29,19 @@ namespace Controllers{
         }
 
         [HttpPost]
-        public async Task<ActionResult<Project>> Create(Project project){
-            var created = await _projectService.CreateProjectAsync(project);
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<Project>> Create(CreateProjectDTO project)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            return CreatedAtAction(nameof(GetById), new {id = created.Id}, created);
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("Only managers can create a project");
+            }
+
+            var created = await _projectService.CreateProjectAsync(managerIdFromToken, project);
+
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]

@@ -1,3 +1,4 @@
+using DTOs;
 using Interfaces;
 using Models;
 
@@ -18,10 +19,18 @@ namespace Services{
             return await _projectRepository.GetProjectByIdAsync(id);
         }
 
-        public async Task<Project> CreateProjectAsync(Project project){
-            project.Id = $"PROJ-{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
-            
-            return await _projectRepository.CreateProjectAsync(project);
+        public async Task<Project> CreateProjectAsync(string managerId,CreateProjectDTO project){
+            Project newProject = new Project
+            {
+                Name = project.Name,
+                Description = project.Description,
+                Goals = project.Goals,
+                ManagerId = managerId
+            };
+
+            newProject.Id = $"PROJ-{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
+
+            return await _projectRepository.CreateProjectAsync(newProject);
         }
 
         public async Task<Project> UpdateProjectAsync(Project project){
