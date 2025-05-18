@@ -33,8 +33,34 @@ namespace Services{
             return await _equipRepository.AddAsync(newEquip);
         }
 
-        public async Task<Equip> UpdateEquipAsync(Equip equip){
-            return await _equipRepository.UpdateAsync(equip);
+        public async Task<Equip> UpdateEquipAsync(string managerId, string id, UpdateEquipDTO equip) {
+            Equip foundedEquip = await _equipRepository.GetByIdAsync(id);
+
+            if (foundedEquip.Project == null)
+            {
+                throw new Exception("You cannot update a equip that not exists!");
+            }
+
+            if (foundedEquip.Project.ManagerId != managerId)
+            {
+                throw new Exception("You cannot update someone equip");
+            }
+
+            if (equip.LeaderId != null){
+                foundedEquip.LeaderId = equip.LeaderId;
+            }
+
+            if (equip.Departament != null)
+            {
+                foundedEquip.Departament = equip.Departament;
+            }
+
+            if (equip.Description != null)
+            {
+                foundedEquip.Description = equip.Description;
+            }
+
+            return await _equipRepository.UpdateAsync(foundedEquip);
         }
 
         public async Task<bool> DeleteEquipAsync(string id){

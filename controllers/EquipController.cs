@@ -48,21 +48,27 @@ namespace Controllers{
 
             if (!addResult)
             {
-                return BadRequest("Add go wrong");
+                return BadRequest("Somthing in process to add member to equip go wrong");
             }
 
             return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<Equip>> Update(string id, Equip equip){
-            if(id != equip.Id){
-                return BadRequest("the URL id doens't match with the id in the request body!!");
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<Equip>> Update(string id, UpdateEquipDTO equip)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("You must be logged to update a equip");
             }
 
-            var updated = await _equipService.UpdateEquipAsync(equip);
+            var updated = await _equipService.UpdateEquipAsync(managerIdFromToken, id, equip);
 
-            if(updated == null){
+            if (updated == null)
+            {
                 return NotFound("Equip not Found!!");
             }
 
