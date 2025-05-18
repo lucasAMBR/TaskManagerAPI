@@ -22,6 +22,9 @@ namespace Repositories{
         }
 
         public async Task<Equip> AddAsync(Equip equip){
+            equip.Leader = await _context.Devs.FindAsync(equip.LeaderId);
+            equip.Project = await _context.Projects.FindAsync(equip.ProjectId);
+            
             _context.Equips.Add(equip);
             await _context.SaveChangesAsync();
             return equip;

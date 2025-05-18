@@ -28,6 +28,11 @@ namespace Data
                 .WithMany(p => p.Equips)
                 .HasForeignKey(e => e.ProjectId);
 
+            modelBuilder.Entity<Equip>()
+                .HasMany(e => e.Members)
+                .WithMany(d => d.Equips)
+                .UsingEntity(j => j.ToTable("EquipDev"));
+
             modelBuilder.Entity<Models.Task>()
                 .HasOne(t => t.Assignee)
                 .WithMany(d => d.Tasks)

@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Security.Claims;
+using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -29,10 +32,26 @@ namespace Controllers{
         }
 
         [HttpPost]
-        public async Task<ActionResult<Equip>> Create(Equip equip){
-            var created = await _equipService.CreateEquipAsync(equip);
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<Equip>> Create(CreateEquipDTO equip)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            return CreatedAtAction(nameof(GetById), new {id = created.Id}, created);
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("You must be logged in to create a equip");
+            }
+
+            var created = await _equipService.CreateEquipAsync(managerIdFromToken, equip);
+
+            var addResult = await _equipAndDevService.AddDevToEquip(created.Id, equip.LeaderId);
+
+            if (!addResult)
+            {
+                return BadRequest("Add go wrong");
+            }
+
+            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
         }
 
         [HttpPut("{id}")]

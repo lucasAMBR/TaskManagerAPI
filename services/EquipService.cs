@@ -1,3 +1,4 @@
+using DTOs;
 using Interfaces;
 using Models;
 
@@ -18,10 +19,18 @@ namespace Services{
             return await _equipRepository.GetByIdAsync(id);
         }
 
-        public async Task<Equip> CreateEquipAsync(Equip equip){
-            equip.Id = $"TEAM-{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
+        public async Task<Equip> CreateEquipAsync(string managerId, CreateEquipDTO equip){
+            Equip newEquip = new Equip
+            {
+                LeaderId = equip.LeaderId,
+                ProjectId = equip.ProjectId,
+                Departament = equip.Departament,
+                Description = equip.Description
+            };
+
+            newEquip.Id = $"TEAM-{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
             
-            return await _equipRepository.AddAsync(equip);
+            return await _equipRepository.AddAsync(newEquip);
         }
 
         public async Task<Equip> UpdateEquipAsync(Equip equip){
