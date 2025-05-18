@@ -38,10 +38,7 @@ namespace Repositories{
             return equip;
         }
 
-        public async Task<bool> DeleteAsync(string id){
-            var equip = await _context.Equips.FindAsync(id);
-            if(equip == null) return false;
-
+        public async Task<bool> DeleteAsync(Equip equip){
             _context.Equips.Remove(equip);
             await _context.SaveChangesAsync();
             return true;

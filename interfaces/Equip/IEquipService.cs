@@ -7,6 +7,6 @@ namespace Interfaces{
         Task<Equip> GetEquipByIdAsync(string id);
         Task<Equip> CreateEquipAsync(string managerId, CreateEquipDTO equip);
         Task<Equip> UpdateEquipAsync(string managerID, string id, UpdateEquipDTO equip);
-        Task<bool> DeleteEquipAsync(string id);
+        Task<bool> DeleteEquipAsync(string managerId, string equipId);
     }
 }

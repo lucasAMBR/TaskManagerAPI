@@ -6,6 +6,6 @@ namespace Interfaces{
         Task<Equip> GetByIdAsync(string id);
         Task<Equip> AddAsync(Equip equip);
         Task<Equip> UpdateAsync(Equip equip);
-        Task<bool> DeleteAsync(string id); 
+        Task<bool> DeleteAsync(Equip equip); 
     }
 }

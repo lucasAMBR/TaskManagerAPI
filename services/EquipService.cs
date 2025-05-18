@@ -63,8 +63,20 @@ namespace Services{
             return await _equipRepository.UpdateAsync(foundedEquip);
         }
 
-        public async Task<bool> DeleteEquipAsync(string id){
-            return await _equipRepository.DeleteAsync(id);
+        public async Task<bool> DeleteEquipAsync(string managerId, string equipId){
+            var equipWithManager = await _equipRepository.GetByIdAsync(equipId);
+
+            if (equipWithManager.Project == null)
+            {
+                throw new Exception("You cannot delete a equip that not exists!");
+            }
+
+            if (equipWithManager.Project.ManagerId != managerId)
+            {
+                throw new Exception("You cannot delete someone equip");
+            }
+
+            return await _equipRepository.DeleteAsync(equipWithManager);
         }
         
     }

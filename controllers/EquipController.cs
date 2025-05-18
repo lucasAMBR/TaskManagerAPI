@@ -76,10 +76,20 @@ namespace Controllers{
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id){
-            var deleted = await _equipService.DeleteEquipAsync(id);
+        [Authorize(Roles = "MNG")]
+        public async Task<IActionResult> Delete(string id)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if(!deleted){
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("You must be logged to delete a equip");
+            }
+
+            var deleted = await _equipService.DeleteEquipAsync(managerIdFromToken, id);
+
+            if (!deleted)
+            {
                 return NotFound("Equip not found!!");
             }
 
