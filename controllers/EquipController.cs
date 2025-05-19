@@ -97,10 +97,38 @@ namespace Controllers{
         }
 
         [HttpPost("{equipId}/add/{devId}")]
-        public async Task<IActionResult> AddDevToEquip(string equipId, string devId){
+        [Authorize(Roles = "MNG,DEV")]
+        public async Task<IActionResult> AddDevToEquip(string equipId, string devId)
+        {
+            var equip = await _equipService.GetEquipByIdAsync(equipId);
+
+            if (equip.Project == null)
+            {
+                return BadRequest("You cannot add a member in a equip that not exists");
+            }
+
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (User.IsInRole("MNG"))
+            {
+                if (equip.Project.ManagerId != userIdFromToken)
+                {
+                    return Forbid("Only the manager of this project can add members");
+                }
+            }
+
+            if (User.IsInRole("DEV"))
+            {
+                if (equip.LeaderId != userIdFromToken)
+                {
+                    return Forbid("Only the Leader of this equip can add members");
+                }
+            }
+            
             var addResult = await _equipAndDevService.AddDevToEquip(equipId, devId);
 
-            if(!addResult){
+            if (!addResult)
+            {
                 return BadRequest("Invalid Equip ID or Dev ID");
             }
 
