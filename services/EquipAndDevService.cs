@@ -1,16 +1,24 @@
 using Interfaces;
 
 namespace Services{
-    public class EquipAndDevService : IEquipAndDevService{
-        
+    public class EquipAndDevService : IEquipAndDevService
+    {
+
         private readonly IEquipAndDevRepository _equipAndDevRepository;
 
-        public EquipAndDevService(IEquipAndDevRepository equipAndDevRepository){
+        public EquipAndDevService(IEquipAndDevRepository equipAndDevRepository)
+        {
             _equipAndDevRepository = equipAndDevRepository;
         }
 
-        public async Task<bool> AddDevToEquip(string equipId, string devId){
+        public async Task<bool> AddDevToEquip(string equipId, string devId)
+        {
             return await _equipAndDevRepository.AddDevToEquipAsync(equipId, devId);
+        }
+
+        public async Task<bool> RemoveDevFromEquip(string equipId, string devId)
+        {
+            return await _equipAndDevRepository.RemoveDevFromEquipAsync(equipId, devId);
         }
     }
 

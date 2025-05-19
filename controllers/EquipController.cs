@@ -10,24 +10,28 @@ namespace Controllers{
 
     [ApiController]
     [Route("api/equip")]
-    public class EquipController : ControllerBase {
+    public class EquipController : ControllerBase
+    {
 
         private readonly IEquipService _equipService;
 
         private readonly IEquipAndDevService _equipAndDevService;
 
-        public EquipController(IEquipService equipService, IEquipAndDevService equipAndDevService){
+        public EquipController(IEquipService equipService, IEquipAndDevService equipAndDevService)
+        {
             _equipService = equipService;
             _equipAndDevService = equipAndDevService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Equip>>> GetAll(){
+        public async Task<ActionResult<IEnumerable<Equip>>> GetAll()
+        {
             return await _equipService.GetAllEquipsAsync();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Equip>> GetById(string id){
+        public async Task<ActionResult<Equip>> GetById(string id)
+        {
             return await _equipService.GetEquipByIdAsync(id);
         }
 
@@ -124,10 +128,49 @@ namespace Controllers{
                     return Forbid("Only the Leader of this equip can add members");
                 }
             }
-            
+
             var addResult = await _equipAndDevService.AddDevToEquip(equipId, devId);
 
             if (!addResult)
+            {
+                return BadRequest("Invalid Equip ID or Dev ID");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{equipId}/remove/{devId}")]
+        [Authorize(Roles = "MNG,DEV")]
+        public async Task<IActionResult> RemoveDevFromEquip(string equipId, string devId)
+        {
+            var equip = await _equipService.GetEquipByIdAsync(equipId);
+
+            if (equip.Project == null)
+            {
+                return BadRequest("You cannot add a member in a equip that not exists");
+            }
+
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (User.IsInRole("MNG"))
+            {
+                if (equip.Project.ManagerId != userIdFromToken)
+                {
+                    return Forbid("Only the manager of this project can remove members");
+                }
+            }
+
+            if (User.IsInRole("DEV"))
+            {
+                if (equip.LeaderId != userIdFromToken)
+                {
+                    return Forbid("Only the Leader of this equip can remove members");
+                }
+            }
+            
+            var removeResult = await _equipAndDevService.RemoveDevFromEquip(equipId, devId);
+
+            if (!removeResult)
             {
                 return BadRequest("Invalid Equip ID or Dev ID");
             }
