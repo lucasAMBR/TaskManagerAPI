@@ -1,5 +1,7 @@
+using System.Security.Claims;
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 
@@ -52,14 +54,25 @@ namespace Controllers{
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<DevResponseDTO>> Update(string id, Dev dev){
-            if(id != dev.Id){
-                return BadRequest("The URL ID doesn't match with the ID in request body!!");
+        [Authorize(Roles = "DEV")]
+        public async Task<ActionResult<DevResponseDTO>> Update(string id, UpdateDevDTO dev)
+        {
+            var devIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (devIdFromToken == null)
+            {
+                return Unauthorized("You must be logged in to update your account information");
             }
 
-            var update = await _devService.UpdateDevAsync(dev);
+            if (devIdFromToken != id)
+            {
+                return Forbid("You only can update YOUR account information");
+            }
 
-            if(update == null){
+            var update = await _devService.UpdateDevAsync(devIdFromToken, dev);
+
+            if (update == null)
+            {
                 return NotFound("User not found!!");
             }
 

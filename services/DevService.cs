@@ -1,3 +1,4 @@
+using DTOs;
 using Interfaces;
 using Models;
 using Utils;
@@ -26,8 +27,20 @@ namespace Services{
             return await _devRepository.AddAsync(dev);
         }
 
-        public async Task<Dev> UpdateDevAsync(Dev dev){
-            return await _devRepository.UpdateAsync(dev);
+        public async Task<Dev> UpdateDevAsync(string devId, UpdateDevDTO dev){
+            Dev foundedDev = await _devRepository.GetByIdAsync(devId);
+
+            if (dev.Name != null)
+            {
+                foundedDev.Name = dev.Name;
+            }
+
+            if (dev.Password != null)
+            {
+                foundedDev.Password = PasswordHelper.HashPassword(foundedDev, dev.Password);
+            }
+
+            return await _devRepository.UpdateAsync(foundedDev);
         }
 
         public async Task<bool> DeleteDevAsync(string id){

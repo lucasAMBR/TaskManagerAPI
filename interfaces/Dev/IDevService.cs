@@ -1,3 +1,4 @@
+using DTOs;
 using Models;
 
 namespace Interfaces{
@@ -5,7 +6,7 @@ namespace Interfaces{
         Task<List<Dev>> GetAllDevsAsync();
         Task<Dev> GetDevByIdAsync(string id);
         Task<Dev> CreateDevAsync(Dev dev);
-        Task<Dev> UpdateDevAsync(Dev dev);
+        Task<Dev> UpdateDevAsync(string devId, UpdateDevDTO dev);
         Task<bool> DeleteDevAsync(string id);
     }
 }

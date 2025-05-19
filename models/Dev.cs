@@ -17,6 +17,7 @@ namespace Models
         public required string Email { get; set; }
 
         [Required]
+        [JsonIgnore]
         public required string Password { get; set; }
 
         [JsonIgnore]
