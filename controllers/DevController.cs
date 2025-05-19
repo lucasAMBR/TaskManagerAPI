@@ -80,10 +80,20 @@ namespace Controllers{
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete(string id){
-            var deleted = await _devService.DeleteDevAsync(id);
+        [Authorize(Roles = "DEV")]
+        public async Task<ActionResult<bool>> Delete(string id)
+        {
+            var devIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            if(!deleted){
+            if (devIdFromToken != id)
+            {
+                return Unauthorized("You can delete only YOUR account");
+            }
+
+            var deleted = await _devService.DeleteDevAsync(devIdFromToken);
+
+            if (!deleted)
+            {
                 return NotFound("User not found!!");
             }
 
