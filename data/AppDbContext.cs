@@ -12,6 +12,7 @@ namespace Data
         public DbSet<Equip> Equips { get; set; }
         public DbSet<Dev> Devs { get; set; }
         public DbSet<Models.Task> Tasks { get; set; }
+        public DbSet<InviteCode> InviteCodes { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
