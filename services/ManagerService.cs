@@ -37,7 +37,7 @@ namespace Services{
                 Password = manager.Password
             };
 
-            newManager.Password = PasswordHelper.HashPassword(newManager, manager.Password);
+            newManager.Password = PasswordHelper.HashPassword(manager.Password);
 
             return await _managerRepository.AddAsync(newManager);
         }
@@ -52,7 +52,7 @@ namespace Services{
 
             if (manager.Password != null)
             {
-                foundedManager.Password = PasswordHelper.HashPassword(foundedManager, manager.Password);
+                foundedManager.Password = PasswordHelper.HashPassword(manager.Password);
             }
 
             return await _managerRepository.UpdateAsync(foundedManager);

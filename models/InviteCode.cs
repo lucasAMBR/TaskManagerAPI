@@ -27,6 +27,8 @@ namespace Models
         public bool IsExpired => DateTime.UtcNow > ExpiresAt;
 
         [JsonIgnore]
-        public Equip? Equip { get; set; }
+        public required Equip Equip { get; set; }
+
+        public InviteCode(){}
     }
 }

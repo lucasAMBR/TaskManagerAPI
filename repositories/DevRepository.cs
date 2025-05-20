@@ -19,8 +19,14 @@ namespace Repositories{
         public async Task<Dev> GetByIdAsync(string id){
             return await _context.Devs.FindAsync(id) ?? throw new Exception($"User {id} not found!!");
         }
+        
+        public async Task<bool> GetByEmailAsync(string email)
+        {
+            return await _context.Devs.AnyAsync(u => u.Email == email);
+        }
 
-        public async Task<Dev> AddAsync(Dev dev){
+        public async Task<Dev> AddAsync(Dev dev)
+        {
             _context.Devs.Add(dev);
             await _context.SaveChangesAsync();
             return dev;

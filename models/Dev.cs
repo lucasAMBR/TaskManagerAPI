@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Interfaces;
 
 namespace Models
 {
-    public class Dev
+    public class Dev : IUser
     {
         [Key]
         public string Id { get; set; } = string.Empty;
@@ -16,9 +17,8 @@ namespace Models
         [EmailAddress]
         public required string Email { get; set; }
 
-        [Required]
         [JsonIgnore]
-        public required string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         [JsonIgnore]
         public List<Equip> Equips { get; set; } = new();

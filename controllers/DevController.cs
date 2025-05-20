@@ -41,7 +41,12 @@ namespace Controllers{
         }
 
         [HttpPost]
-        public async Task<ActionResult<DevResponseDTO>> Create(Dev dev){
+        public async Task<ActionResult<DevResponseDTO>> Create(CreateDevDTO dev){
+            if (await _devService.GetByEmailAsync(dev.Email))
+            {
+                return Conflict("Email already in use");
+             }
+
             var created = await _devService.CreateDevAsync(dev);
 
             var responseDTO = new DevResponseDTO {

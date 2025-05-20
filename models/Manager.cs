@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using Interfaces;
 
 namespace Models
 {
-    public class Manager
+    public class Manager : IUser
     {
         [Key]
         public string Id { get; set; } = string.Empty;

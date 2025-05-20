@@ -20,11 +20,24 @@ namespace Services{
             return await _devRepository.GetByIdAsync(id);
         }
 
-        public async Task<Dev> CreateDevAsync(Dev dev){
-            dev.Id = $"DEV-{dev.Name.Substring(0, 2)}@{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
-            dev.Password = PasswordHelper.HashPassword(dev, dev.Password);
+        public async Task<bool> GetByEmailAsync(string email)
+        {
+            return await _devRepository.GetByEmailAsync(email);
+        }
 
-            return await _devRepository.AddAsync(dev);
+        public async Task<Dev> CreateDevAsync(CreateDevDTO dev)
+        {
+            var newDev = new Dev
+            {
+                Id = $"DEV-{dev.Name.Substring(0, 2)}@{DateTime.Now.ToString("yyyyMMddHHmmssff")}",
+                Name = dev.Name,
+                Email = dev.Email,
+                Password = dev.Password
+            };
+
+            newDev.Password = PasswordHelper.HashPassword(dev.Password);
+
+            return await _devRepository.AddAsync(newDev);
         }
 
         public async Task<Dev> UpdateDevAsync(string devId, UpdateDevDTO dev){
@@ -37,7 +50,7 @@ namespace Services{
 
             if (dev.Password != null)
             {
-                foundedDev.Password = PasswordHelper.HashPassword(foundedDev, dev.Password);
+                foundedDev.Password = PasswordHelper.HashPassword(dev.Password);
             }
 
             return await _devRepository.UpdateAsync(foundedDev);

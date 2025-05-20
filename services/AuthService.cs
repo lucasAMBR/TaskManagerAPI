@@ -2,7 +2,9 @@ using System.Threading.Tasks;
 using Data;
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Models;
 using Utils;
 
 namespace Services{
@@ -18,7 +20,7 @@ namespace Services{
             
             var manager = await _context.Managers.FirstOrDefaultAsync(m => m.Email == email);
 
-            if(manager != null && PasswordHelper.VerifyPassword(manager, manager.Password, password)){
+            if(manager != null && PasswordHelper.VerifyPassword(manager.Password, password)){
                 var token = TokenService.GenerateToken(manager.Id);
 
                 return new LoginResultDTO{
@@ -27,13 +29,14 @@ namespace Services{
                     Role = "MNG"
                 };
             }
-
             var dev = await _context.Devs.FirstOrDefaultAsync(d => d.Email == email);
 
-            if(dev != null && PasswordHelper.VerifyPassword(dev, dev.Password, password)){
+            if (dev != null && PasswordHelper.VerifyPassword(dev.Password, password))
+            {
                 var token = TokenService.GenerateToken(dev.Id);
 
-                return new LoginResultDTO{
+                return new LoginResultDTO
+                {
                     Token = token,
                     Name = dev.Name,
                     Role = "DEV"
