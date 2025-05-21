@@ -28,7 +28,7 @@ namespace Models
         public Equip? Equip { get; set; }
 
         [ForeignKey("Assignee")]
-        public string? AssigneeId { get; set; } = string.Empty;
+        public string? AssigneeId { get; set; }
         [JsonIgnore]
         public Dev? Assignee { get; set; }
 

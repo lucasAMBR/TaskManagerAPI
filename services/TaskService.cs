@@ -28,15 +28,16 @@ namespace Services
             return await _taskRepository.GetTasksByUserId(userId);
         }
 
-        public async Task<Models.Task> CreateTaskAsync(CreateTaskDTO task)
+        public async Task<Models.Task> CreateTaskAsync(string equipId, CreateTaskDTO task)
         {
             Models.Task newTask = new Models.Task
             {
+                Id = $"TSK-{DateTime.Now.ToString("yyyyMMddHHmmssff")}",
                 Description = task.Description,
                 Priority = task.Priority,
                 InitialDate = task.InitialDate,
                 FinalDate = task.FinalDate,
-                EquipId = task.EquipId
+                EquipId = equipId
             };
 
             if (task.AssigneeId != null)

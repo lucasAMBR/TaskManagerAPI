@@ -58,6 +58,7 @@ namespace Repositories
             Models.Task task = await GetByIdAsync(taskId);
 
             task.IsDone = true;
+            await _context.SaveChangesAsync();
             return true;
         }
     }
