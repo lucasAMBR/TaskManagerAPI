@@ -52,6 +52,9 @@ builder.Services.AddScoped<IEquipAndDevService, EquipAndDevService>();
 builder.Services.AddScoped<IInviteCodeRepository, InviteCodeRepository>();
 builder.Services.AddScoped<IInviteCodeService, InviteCodeService>();
 
+builder.Services.AddScoped<ITaskRepository, TaskRepository>();
+builder.Services.AddScoped<ITaskService, TaskService>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();

@@ -14,22 +14,25 @@ namespace Models
         public required string Description { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public required string Priority { get; set; }
+        public required int Priority { get; set; }
 
         [Required]
         public DateTime InitialDate { get; set; }
 
+        [Required]
+        public DateTime FinalDate { get; set; }
+
         [ForeignKey("Equip")]
         public string EquipId { get; set; } = string.Empty;
+        [JsonIgnore]
+        public Equip? Equip { get; set; }
 
         [ForeignKey("Assignee")]
         public string? AssigneeId { get; set; } = string.Empty;
+        [JsonIgnore]
         public Dev? Assignee { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public required string Status { get; set; }
+        public bool IsDone { get; set; } = false; 
 
         public Task() { }
     }

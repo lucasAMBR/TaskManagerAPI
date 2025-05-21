@@ -42,6 +42,7 @@ namespace Repositories
 
 
             invite.CurrentUsages++;
+            await _context.SaveChangesAsync();
             return true;
         }
     }
