@@ -14,11 +14,13 @@ namespace Controllers
 
         private readonly ITaskService _taskService;
         private readonly IEquipService _equipService;
+        private readonly IConclusionNoteService _conclusionNoteService;
 
-        public TaskController(ITaskService taskService, IEquipService equipService)
+        public TaskController(ITaskService taskService, IEquipService equipService, IConclusionNoteService conclusionNoteService)
         {
             _taskService = taskService;
             _equipService = equipService;
+            _conclusionNoteService = conclusionNoteService;
         }
 
         [HttpGet("equip/{equipId}")]
@@ -177,7 +179,7 @@ namespace Controllers
 
         [HttpPut("conclude/{taskId}")]
         [Authorize(Roles = "DEV")]
-        public async Task<IActionResult> ConcludeTask(string taskId)
+        public async Task<ActionResult<ConclusionNote>> ConcludeTask(string taskId, CreateConclusionNoteDTO note)
         {
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -200,7 +202,9 @@ namespace Controllers
                 return BadRequest("Something go wrong in conclusion");
             }
 
-            return NoContent();
+            var conclusionNote = await _conclusionNoteService.GenerateConclusionNote(taskId, note);
+
+            return conclusionNote;
         }
     }
 }

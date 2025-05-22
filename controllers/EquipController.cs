@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Security.Claims;
 using DTOs;
+using Formatter;
 using Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,14 +31,16 @@ namespace Controllers{
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Equip>> GetById(string id)
+        public async Task<ActionResult<EquipResponseDTO>> GetById(string id)
         {
-            return await _equipService.GetEquipByIdAsync(id);
+            var equipData = await _equipService.GetEquipByIdAsync(id);
+
+            return FormatterHelper.EquipFormater(equipData);
         }
 
         [HttpPost]
         [Authorize(Roles = "MNG")]
-        public async Task<ActionResult<Equip>> Create(CreateEquipDTO equip)
+        public async Task<ActionResult<EquipResponseDTO>> Create(CreateEquipDTO equip)
         {
             var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -55,7 +58,7 @@ namespace Controllers{
                 return BadRequest("Somthing in process to add member to equip go wrong");
             }
 
-            return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+            return Ok(FormatterHelper.EquipFormater(created));
         }
 
         [HttpPut("{id}")]

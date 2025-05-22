@@ -55,6 +55,9 @@ builder.Services.AddScoped<IInviteCodeService, InviteCodeService>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 builder.Services.AddScoped<ITaskService, TaskService>();
 
+builder.Services.AddScoped<IConclusionNoteRepository, ConclusionNoteRepository>();
+builder.Services.AddScoped<IConclusionNoteService, ConclusionNoteService>();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddControllers();

@@ -32,7 +32,10 @@ namespace Models
         [JsonIgnore]
         public Dev? Assignee { get; set; }
 
-        public bool IsDone { get; set; } = false; 
+        public bool IsDone { get; set; } = false;
+
+        [JsonIgnore]
+        public ConclusionNote? ConclusionNote { get; set; }
 
         public Task() { }
     }

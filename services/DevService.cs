@@ -25,6 +25,11 @@ namespace Services{
             return await _devRepository.GetByEmailAsync(email);
         }
 
+        public async Task<List<Dev>> GetAllMembersByEquipId(string equipId)
+        {
+            return await _devRepository.GetAllMembersByEquipId(equipId);
+        }
+
         public async Task<Dev> CreateDevAsync(CreateDevDTO dev)
         {
             var newDev = new Dev

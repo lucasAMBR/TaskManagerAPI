@@ -13,6 +13,7 @@ namespace Data
         public DbSet<Dev> Devs { get; set; }
         public DbSet<Models.Task> Tasks { get; set; }
         public DbSet<InviteCode> InviteCodes { get; set; }
+        public DbSet<ConclusionNote> ConclusionNotes { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +40,12 @@ namespace Data
                 .HasOne(t => t.Assignee)
                 .WithMany(d => d.Tasks)
                 .HasForeignKey(t => t.AssigneeId);
+
+            modelBuilder.Entity<Models.Task>()
+                .HasOne(t => t.ConclusionNote)
+                .WithOne(n => n.Task)
+                .HasForeignKey<ConclusionNote>(n => n.TaskId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
 
     }

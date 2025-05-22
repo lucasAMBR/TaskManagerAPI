@@ -40,6 +40,12 @@ namespace Controllers{
             }); 
         }
 
+        [HttpGet("equip/{equipId}/all")]
+        public async Task<ActionResult<List<Dev>>> GetAllMembersByEquipId(string equipId)
+        {
+            return await _devService.GetAllMembersByEquipId(equipId);
+        }
+
         [HttpPost]
         public async Task<ActionResult<DevResponseDTO>> Create(CreateDevDTO dev){
             if (await _devService.GetByEmailAsync(dev.Email))

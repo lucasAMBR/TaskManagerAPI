@@ -18,7 +18,11 @@ namespace Repositories{
 
         
         public async Task<Equip> GetByIdAsync(string id){
-            return await _context.Equips.Include(e => e.Project).Include(e => e.Members).FirstOrDefaultAsync(e => e.Id == id) ?? throw new Exception($"Equip {id} not found!!");
+            return await _context.Equips
+                .Include(e => e.Project)
+                .Include(e => e.Members)
+                .Include(e => e.Leader)
+                .FirstOrDefaultAsync(e => e.Id == id) ?? throw new Exception($"Equip {id} not found!!");
         }
 
         public async Task<Equip> AddAsync(Equip equip){

@@ -25,6 +25,13 @@ namespace Repositories{
             return await _context.Devs.AnyAsync(u => u.Email == email);
         }
 
+        public async Task<List<Dev>> GetAllMembersByEquipId(string equipId)
+        {
+            Equip equip = await _context.Equips.Include(e => e.Members).FirstOrDefaultAsync(e => e.Id == equipId) ?? throw new Exception("Cannot found this equip");
+
+            return equip.Members;
+        }
+
         public async Task<Dev> AddAsync(Dev dev)
         {
             _context.Devs.Add(dev);
