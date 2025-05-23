@@ -16,6 +16,10 @@ namespace Controllers{
             _devService = devService;
         }
 
+        /// <summary>
+        /// Lista todos os devs no sistema, criado apenas para fins de teste
+        /// </summary>
+        /// <returns>Lista de devs</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DevResponseDTO>>> GetAll(){
             var devs = await _devService.GetAllDevsAsync();
@@ -29,6 +33,11 @@ namespace Controllers{
             return Ok(devsListDTO);
         }
 
+        /// <summary>
+        /// Pega os dados de um Dev
+        /// </summary>
+        /// <param name="id"> id do dev passado pela URL</param>
+        /// <returns>um objeto com: id, name, email</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<DevResponseDTO>> GetById(string id){
             var dev = await _devService.GetDevByIdAsync(id);
@@ -40,6 +49,11 @@ namespace Controllers{
             }); 
         }
 
+        /// <summary>
+        /// Lista todos os devs de uma equipe escolhida
+        /// </summary>
+        /// <param name="equipId">id da equipe</param>
+        /// <returns>retorna uma lista de desenvolvedores, cada um com: id, name, email</returns>
         [HttpGet("equip/{equipId}/all")]
         public async Task<ActionResult<List<Dev>>> GetAllMembersByEquipId(string equipId)
         {
@@ -64,6 +78,21 @@ namespace Controllers{
             return CreatedAtAction(nameof(GetById), new {id = created.Id}, responseDTO);
         }
 
+        /// <summary>
+        /// Atualiza os dados de um dev
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="id">id do dev escolhido para sofrer as alterações</param>
+        /// <param name="dev">
+        /// dados que serão colocados no lugar dos antigos, pode conter:
+        /// - name (opcional): novo nome do dev,
+        /// - password (opcional): nova senha do dev 
+        /// </param>
+        /// <returns>Sem Retorno</returns>
+        /// <response code = "204">Informações atualizadas com sucesso</response>
         [HttpPut("{id}")]
         [Authorize(Roles = "DEV")]
         public async Task<ActionResult<DevResponseDTO>> Update(string id, UpdateDevDTO dev)
@@ -90,6 +119,16 @@ namespace Controllers{
             return NoContent();
         }
 
+        /// <summary>
+        /// Deleta um dev e todas as suas informações relacionadas, porem matem suas tasks atribuidas com Assignee = null
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="id">Id do dev a ser removido</param>
+        /// <returns>Sem retorno</returns>
+        /// <response code = "204">Dev devidamente excluido</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = "DEV")]
         public async Task<ActionResult<bool>> Delete(string id)

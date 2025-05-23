@@ -27,7 +27,7 @@ namespace Repositories
 
         public async Task<List<Models.Task>> GetTasksByUserId(string userId)
         {
-            return await _context.Tasks.Where(t => t.AssigneeId == userId).ToListAsync();
+            return await _context.Tasks.Where(t => t.AssigneeId == userId).Include(t => t.Equip). Include(t => t.Assignee).ToListAsync();
         }
 
         public async Task<Models.Task> CreateTaskAsync(Models.Task task)

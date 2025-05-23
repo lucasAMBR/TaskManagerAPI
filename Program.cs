@@ -20,7 +20,7 @@ if(string.IsNullOrEmpty(connectionString)){
 }
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 23))));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 23))).EnableSensitiveDataLogging().LogTo(Console.WriteLine, LogLevel.Information));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters{

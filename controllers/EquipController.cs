@@ -24,12 +24,22 @@ namespace Controllers{
             _equipAndDevService = equipAndDevService;
         }
 
+        /// <summary>
+        /// Lista todas as equipes criadas no sistema, criado para fins de teste
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Equip>>> GetAll()
         {
             return await _equipService.GetAllEquipsAsync();
         }
 
+        /// <summary>
+        /// Pega os dados de uma unica equipe
+        /// </summary>
+        /// <param name="id">Id da equipe que sera buscada, passado pela URL</param>
+        /// <returns>um objeto com: id, leaderId, leaderName, projectId, projectName, departament, description</returns>
+        /// <response code="200">Deu tudo certo</response>
         [HttpGet("{id}")]
         public async Task<ActionResult<EquipResponseDTO>> GetById(string id)
         {
@@ -38,6 +48,21 @@ namespace Controllers{
             return FormatterHelper.EquipFormater(equipData);
         }
 
+        /// <summary>
+        /// Cria um nova equipe dentro de um projeto
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="equip">
+        /// Um objeto com os seguintes dados: 
+        /// - leaderId : id do dev escolhido para liderar essa equipe
+        /// - projectId : id do projeto que essa equipe pertence
+        /// - departament: departamento dessa equipe, backend, frontend, design, UI/UX e afins
+        /// - description: detalhes do que essa equipe vai fazer, seu objetivo
+        /// </param>
+        /// <returns>dados da equipe cadastrada: id, leaderId, leaderName, projectId, projectName, departament, description</returns>
         [HttpPost]
         [Authorize(Roles = "MNG")]
         public async Task<ActionResult<EquipResponseDTO>> Create(CreateEquipDTO equip)
@@ -61,6 +86,23 @@ namespace Controllers{
             return Ok(FormatterHelper.EquipFormater(created));
         }
 
+        /// <summary>
+        /// Altera informações de um equipe
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// Apenas managers, podem editar suas PROPRIAS equipes
+        /// </remarks>
+        /// <param name="id">id da equipe que sera modificada, passado pela URL</param>
+        /// <param name="equip">
+        /// dados que substituirão os dados antigos, pode conter: 
+        /// - leaderId (opcional): id do novo lider da equipe
+        /// - departament (opcional): novo departamento da equipe
+        /// - description (opcional): nova descrição da equipe
+        /// </param>
+        /// <returns>sem retorno</returns>
+        /// <response code="204">Alterou com sucesso</response>
         [HttpPut("{id}")]
         [Authorize(Roles = "MNG")]
         public async Task<ActionResult<Equip>> Update(string id, UpdateEquipDTO equip)
@@ -82,6 +124,16 @@ namespace Controllers{
             return NoContent();
         }
 
+        /// <summary>
+        /// Remove um equipe do sistema
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="id">id da equipe a ser removida juntamente com seus dados relacionados</param>
+        /// <returns>sem retorno</returns>
+        /// <response code="204">Tudo foi removido com sucesso</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = "MNG")]
         public async Task<IActionResult> Delete(string id)
@@ -103,6 +155,18 @@ namespace Controllers{
             return NoContent();
         }
 
+        /// <summary>
+        /// Adiciona um dev em uma equipe
+        /// Exemplo de URL: base:porta/api/equip/{id da equipe}/add/{id do dev}
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// Só pode ser utilizado pelo manager do projeto que essa equipe pertence, ou pelo dev lider dessa equipe
+        /// </remarks>
+        /// <param name="equipId">id da equipe</param>
+        /// <param name="devId">id do dev que será adicionado</param>
+        /// <returns></returns>
         [HttpPost("{equipId}/add/{devId}")]
         [Authorize(Roles = "MNG,DEV")]
         public async Task<IActionResult> AddDevToEquip(string equipId, string devId)
@@ -142,6 +206,14 @@ namespace Controllers{
             return NoContent();
         }
 
+        /// <summary>
+        /// Remove um dev de uma determinada equipe
+        /// exemlo de URL: base:porta/api/equip/{id da equipe}/remove/{id do dev}
+        /// </summary>
+        /// <param name="equipId">id da equipe</param>
+        /// <param name="devId">id do dev que sera removido da equipe</param>
+        /// <returns>sem retorno</returns>
+        /// <response code="204">Removido com sucesso</response>
         [HttpDelete("{equipId}/remove/{devId}")]
         [Authorize(Roles = "MNG,DEV")]
         public async Task<IActionResult> RemoveDevFromEquip(string equipId, string devId)

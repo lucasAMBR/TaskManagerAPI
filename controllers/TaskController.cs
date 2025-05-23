@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using DTOs;
+using Formatter;
 using Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,19 @@ namespace Controllers
             _conclusionNoteService = conclusionNoteService;
         }
 
+        /// <summary>
+        /// Lista todas as tasks de um equipe
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// Apenas o manager e membros da equipe podem ver essas tasks
+        /// </remarks>
+        /// <param name="equipId">id da equipe</param>
+        /// <returns>lista de tasks, cada um com os seguintes campos: id, description, priority, initialDate, finalDate, equipId, equipDepartament, assigneeId, assigneeName, isDone</returns>
         [HttpGet("equip/{equipId}")]
         [Authorize(Roles = "MNG, DEV")]
-        public async Task<ActionResult<List<Models.Task>>> GetTasksByEquipId(string equipId)
+        public async Task<ActionResult<List<FormattedTaskDTO>>> GetTasksByEquipId(string equipId)
         {
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -53,12 +64,24 @@ namespace Controllers
                 }
             }
 
-            return await _taskService.GetTasksByEquipId(equipId);
+            var taskList = await _taskService.GetTasksByEquipId(equipId);
+
+            var FormatedTaskList = taskList.Select(task => FormatterHelper.TaskFormatter(task)).ToList();
+
+            return FormatedTaskList;
         }
 
+        /// <summary>
+        /// Lista todas as tarefas do usuario logado
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <returns>lista de tasks, cada um com os seguintes campos: id, description, priority, initialDate, finalDate, equipId, equipDepartament, assigneeId, assigneeName, isDone</returns>
         [HttpGet("my-tasks")]
         [Authorize(Roles = "DEV")]
-        public async Task<ActionResult<List<Models.Task>>> GetTasksByUserId()
+        public async Task<ActionResult<List<FormattedTaskDTO>>> GetTasksByUserId()
         {
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -67,12 +90,31 @@ namespace Controllers
                 return Unauthorized("You must be logged to see your tasks");
             }
 
-            return await _taskService.GetTasksByUserId(userIdFromToken);
+            var rawList = await _taskService.GetTasksByUserId(userIdFromToken);
+
+            var formatedList = rawList.Select(taskItem => FormatterHelper.TaskFormatter(taskItem)).ToList();
+
+            return formatedList;
         }
 
+        /// <summary>
+        /// Cria uma nova tarefa para uma determinada equipe
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="equipId">nome da equipe que recebera a nova tarefa, via URL</param>
+        /// <param name="task">
+        /// um objeto com os detalhes da task, contendo:
+        /// - description : descrição da tarefa, oq deve ser feito,
+        /// - priority : nivel de prioridade da tarefa, quanto mais alto, mais urgente (um numero inteiro)
+        /// - assigneeId (opcional): Id do dev responsavel por essa tarefa, pode não ser enviado para ficar disponivel para algum dev desocupado pegar ela pra si
+        /// </param>
+        /// <returns>Retorna os dados da tasks cadastrada: id, description, priority, initialDate, finalDate, equipId, equipDepartament, assigneeId, assigneeName, isDone</returns>
         [HttpPost("{equipId}/create")]
         [Authorize(Roles = "DEV, MNG")]
-        public async Task<ActionResult<Models.Task>> CreateTask(string equipId, CreateTaskDTO task)
+        public async Task<ActionResult<FormattedTaskDTO>> CreateTask(string equipId, CreateTaskDTO task)
         {
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
@@ -103,9 +145,24 @@ namespace Controllers
                 }
             }
 
-            return await _taskService.CreateTaskAsync(equipId, task);
+            var rawTask = await _taskService.CreateTaskAsync(equipId, task);
+
+            return FormatterHelper.TaskFormatter(rawTask);
         }
 
+        /// <summary>
+        /// Atribui uma determinada tarefa para um dev
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// OBS: Managers do projeto e lideres podem atribuir tarefas para outros devs, inclusive pegar tarefas que ja estavam atribuidas e atribuir novamente
+        /// Devs normais apenas podem pegar tarefas que não tem um responsavel atribuido para si
+        /// </remarks>
+        /// <param name="taskId">id da task a ser atribuida</param>
+        /// <param name="devId">id do dev que sera responsavel pela tarefa</param>
+        /// <returns>sem retorno</returns>
+        /// <response code="204">atribuido corretamente</response>
         [HttpPut("{taskId}/assign/{devId}")]
         [Authorize(Roles = "DEV, MNG")]
         public async Task<ActionResult<bool>> AssignTask(string taskId, string devId)
@@ -177,6 +234,22 @@ namespace Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Conclui uma task
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// OBS: Apenas o responsavel pela tarefa pode concluir ela
+        /// </remarks>
+        /// <param name="taskId">id da tarefa</param>
+        /// <param name="note">
+        /// objeto com os dados do relatorio de conclusão que contem: 
+        /// - type : Tipo da conclusão pode ser "Sucess", "With remarks"
+        /// - note : Descrição do que foi, possiveis problemas encontrados, coisas novas que podem ser feitas a partir dessa tarefa
+        /// - hoursSpend: Horas gastas para completar essa tarefa para ajudar na precificação do sistema
+        /// </param>
+        /// <returns>Retorna o relatorio de conclusão com: id, taskId, task (Com todos os dados da task), type, notes, hoursSpend, createdAt</returns>
         [HttpPut("conclude/{taskId}")]
         [Authorize(Roles = "DEV")]
         public async Task<ActionResult<ConclusionNote>> ConcludeTask(string taskId, CreateConclusionNoteDTO note)

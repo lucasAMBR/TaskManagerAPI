@@ -18,6 +18,10 @@ namespace Controllers{
             _managerService = managerService;
         }
         
+        /// <summary>
+        /// Retorna todos os managers cadastrados no sistema, não precisa que nada seja passado mas não sera usado pelo frontend, criei so para fins de testes
+        /// </summary>
+        /// <returns>Lista de todos os managers</returns>
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ManagerResponseDTO>>> GetAll(){
             var managers = await _managerService.GetAllManagersAsync();
@@ -31,6 +35,11 @@ namespace Controllers{
             return Ok(managersListDTO);
         }
 
+        /// <summary>
+        /// Busca um manager pelo id e retorna seus dados
+        /// </summary>
+        /// <param name="id">Id do manager</param>
+        /// <returns>Um objeto com o id, name, email</returns>
         [HttpGet("{id}")]
         public async Task<ActionResult<ManagerResponseDTO>> GetById(string id){
             var manager = await _managerService.GetManagerByIdAsync(id);
@@ -42,6 +51,16 @@ namespace Controllers{
             });
         }
 
+        /// <summary>
+        /// Registra um novo manager no sistema
+        /// </summary>
+        /// <param name="manager">
+        /// Um objeto com os seguintes dados do manager:
+        /// - name : O nome do manager,
+        /// - email : O email do manager,
+        /// - password : A senha do usuario
+        /// </param>
+        /// <returns>O objeto do manager cadastrado: id, name, email</returns>
         [HttpPost]
         public async Task<ActionResult<ManagerResponseDTO>> Create(CreateManagerDTO manager){
 
@@ -61,6 +80,21 @@ namespace Controllers{
             return CreatedAtAction(nameof(GetById), new {id = created.Id}, responseDTO);
         }
 
+        /// <summary>
+        /// Atualiza os dados de um manager
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="id">id do manager que se deseja alterar (passado pela URL)</param>
+        /// <param name="manager">
+        /// Um objeto com os possiveis seguintes dados: 
+        /// - name (opcional) : Novo nome do manager
+        /// - password (opcional) : Nova senha desse manager
+        /// </param>
+        /// <returns>Sem retorno</returns>
+        /// <response code = "204">Informações atualizadas com sucesso</response>
         [HttpPut("{id}")]
         [Authorize(Roles = "MNG")]
         public async Task<IActionResult> Update(string id, UpdateManagerDTO manager)
@@ -82,6 +116,16 @@ namespace Controllers{
             return NoContent();
         }
 
+        /// <summary>
+        /// Deleta a conta de um manager e todos os seus dados relacionados
+        /// </summary>
+        /// <remarks>
+        /// Endpoint protegido, para acessa-lo é necessario passar nos headers da requisição:
+        /// Authorization: Bearer {token do usuario gerado no login}
+        /// </remarks>
+        /// <param name="id">id do manager</param>
+        /// <returns>Sem retorno</returns>
+        /// <response code = "204">Informações removidas com sucesso</response>
         [HttpDelete("{id}")]
         [Authorize(Roles = "MNG")]
         public async Task<IActionResult> Delete(string id)
