@@ -22,6 +22,16 @@ if(string.IsNullOrEmpty(connectionString)){
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 23))).EnableSensitiveDataLogging().LogTo(Console.WriteLine, LogLevel.Information));
 
+builder.Services.AddCors(options => 
+    {
+        options.AddPolicy("PermitirOrigemEspecifica", policy => {
+            policy.WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+    }
+);
+
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters{
         ValidateIssuer = false,
@@ -63,6 +73,8 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddControllers();
 
 var app = builder.Build();
+
+app.UseCors("PermitirOrigemEspecifica");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
