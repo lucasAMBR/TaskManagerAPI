@@ -34,7 +34,7 @@ namespace Services
             {
                 if (equip.Project == null)
                 {
-                    throw new Exception("invites can only be generated for existent project equips");
+                    throw new Exception("Invites can only be generated for existent project equips");
                 }
                 if (userId != equip.Project.ManagerId)
                 {
@@ -62,7 +62,7 @@ namespace Services
 
             if (invite)
             {
-                var equipIdfromCode = await _inviteCodeRepository.GetInviteByCode(code) ?? throw new Exception("Cannot find this invite");
+                var equipIdfromCode = await _inviteCodeRepository.GetInviteByCode(code) ?? throw new Exception("Can not find this invite");
 
                 return await _equipAndDevRepository.AddDevToEquipAsync(equipIdfromCode.EquipId, userId);
             }

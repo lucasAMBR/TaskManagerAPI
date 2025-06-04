@@ -38,12 +38,12 @@ namespace Services{
 
             if (foundedEquip.Project == null)
             {
-                throw new Exception("You cannot update a equip that not exists!");
+                throw new Exception("You can not update a equip that does not exist!");
             }
 
             if (foundedEquip.Project.ManagerId != managerId)
             {
-                throw new Exception("You cannot update someone equip");
+                throw new Exception("You can not update someone else's equip");
             }
 
             if (equip.LeaderId != null){
@@ -68,12 +68,12 @@ namespace Services{
 
             if (equipWithManager.Project == null)
             {
-                throw new Exception("You cannot delete a equip that not exists!");
+                throw new Exception("You can not delete a equip that does not exist!");
             }
 
             if (equipWithManager.Project.ManagerId != managerId)
             {
-                throw new Exception("You cannot delete someone equip");
+                throw new Exception("You can not delete someone else's equip");
             }
 
             return await _equipRepository.DeleteAsync(equipWithManager);
