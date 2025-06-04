@@ -73,14 +73,14 @@ namespace Controllers
 
             if (devIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to entre in a equip");
+                return Unauthorized("You must be logged in to enter in a equip");
             }
 
             var addedToEquip = await _inviteCodeService.UseInviteCode(devIdFromToken, code);
 
             if (!addedToEquip)
             {
-                return BadRequest("You cannot be added to this equip");
+                return BadRequest("You can not be added to this equip");
             }
             
             return NoContent();

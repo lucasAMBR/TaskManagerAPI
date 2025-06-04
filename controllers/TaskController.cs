@@ -53,14 +53,14 @@ namespace Controllers
             {
                 if (!isMember)
                 {
-                    return Unauthorized("You cannot see a task in a someone equip!");
+                    return Unauthorized("You can not see a task in a someone else's equip!");
                 }
             }
             if (User.IsInRole("MNG"))
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Unauthorized("You cannot see a task in a someone equip!");
+                    return Unauthorized("You can not see a task in a someone elses's equip!");
                 }
             }
 
@@ -87,7 +87,7 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged to see your tasks");
+                return Unauthorized("You must be logged in to see your tasks");
             }
 
             var rawList = await _taskService.GetTasksByUserId(userIdFromToken);
@@ -137,7 +137,7 @@ namespace Controllers
             {
                 if (equip.Project == null)
                 {
-                    return BadRequest("Project doent exist");
+                    return BadRequest("Project does not exist");
                 }
                 if (userIdFromToken != equip.Project.ManagerId)
                 {
@@ -200,7 +200,7 @@ namespace Controllers
 
                     if (!autoAssigned)
                     {
-                        return BadRequest("Somthing go wrong during assignment");
+                        return BadRequest("Somthing went wrong during assignment");
                     }
 
                     return NoContent();
@@ -216,7 +216,7 @@ namespace Controllers
             {
                 if (equip.Project == null)
                 {
-                    return BadRequest("Project doent exist");
+                    return BadRequest("Project does not exist");
                 }
                 if (!isManager)
                 {
@@ -228,7 +228,7 @@ namespace Controllers
 
             if (!assigned)
             {
-                return BadRequest("Somthing go wrong during assignment");
+                return BadRequest("Somthing went wrong during the assignment");
             }
 
             return NoContent();
@@ -265,14 +265,14 @@ namespace Controllers
 
             if (userIdFromToken != task.AssigneeId)
             {
-                return BadRequest("You cannot end someone task");
+                return BadRequest("You can not end someone else's task");
             }
 
             var isConcluded = await _taskService.ConcludeTaskAsync(taskId);
 
             if (!isConcluded)
             {
-                return BadRequest("Something go wrong in conclusion");
+                return BadRequest("Something went wrong in conclusion");
             }
 
             var conclusionNote = await _conclusionNoteService.GenerateConclusionNote(taskId, note);

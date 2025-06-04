@@ -80,7 +80,7 @@ namespace Controllers{
 
             if (!addResult)
             {
-                return BadRequest("Somthing in process to add member to equip go wrong");
+                return BadRequest("Something went wrong when adding a member to the team");
             }
 
             return Ok(FormatterHelper.EquipFormater(created));
@@ -175,7 +175,7 @@ namespace Controllers{
 
             if (equip.Project == null)
             {
-                return BadRequest("You cannot add a member in a equip that not exists");
+                return BadRequest("You cannot add a member in a equip that does not exists");
             }
 
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -184,7 +184,7 @@ namespace Controllers{
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Forbid("Only the manager of this project can add members");
+                    return Forbid("Only the manager of the project can add members");
                 }
             }
 
@@ -192,7 +192,7 @@ namespace Controllers{
             {
                 if (equip.LeaderId != userIdFromToken)
                 {
-                    return Forbid("Only the Leader of this equip can add members");
+                    return Forbid("Only the Leader can add members");
                 }
             }
 
@@ -222,7 +222,7 @@ namespace Controllers{
 
             if (equip.Project == null)
             {
-                return BadRequest("You cannot add a member in a equip that not exists");
+                return BadRequest("You can not add a member in a equip that does not exist.");
             }
 
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -231,7 +231,7 @@ namespace Controllers{
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Forbid("Only the manager of this project can remove members");
+                    return Forbid("Only the manager can remove members");
                 }
             }
 
@@ -239,7 +239,7 @@ namespace Controllers{
             {
                 if (equip.LeaderId != userIdFromToken)
                 {
-                    return Forbid("Only the Leader of this equip can remove members");
+                    return Forbid("Only the Leader can remove members");
                 }
             }
             
