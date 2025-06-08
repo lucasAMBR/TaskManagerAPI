@@ -21,7 +21,13 @@ namespace Repositories{
             return await _context.Projects.FindAsync(id) ?? throw new Exception($"Project {id} not found!!");
         }
 
-        public async Task<Project> CreateProjectAsync(Project project){
+        public async Task<List<Project>> GetAllMyProjects(string managerId)
+        {
+            return await _context.Projects.Where(p => p.ManagerId == managerId).ToListAsync();
+        }
+
+        public async Task<Project> CreateProjectAsync(Project project)
+        {
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
             return project;

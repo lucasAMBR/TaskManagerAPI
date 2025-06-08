@@ -48,6 +48,36 @@ namespace Controllers{
             return FormatterHelper.EquipFormater(equipData);
         }
 
+        [HttpGet("project/{projectId}")]
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<List<Equip>>> GetAllEquipsByProjectId(string projectId)
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("You must be logged in to create a equip");
+            }
+
+            return await _equipService.GetAllEquipsByProjectId(projectId);
+            
+        }
+
+        [HttpGet("dev")]
+        [Authorize(Roles = "DEV")]
+        public async Task<ActionResult<List<Equip>>> GetAllEquipsByDevId()
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("You must be logged in to create a equip");
+            }
+
+            return await _equipService.GetAllEquipsByDevId(managerIdFromToken);
+            
+        }
+
         /// <summary>
         /// Cria um nova equipe dentro de um projeto
         /// </summary>

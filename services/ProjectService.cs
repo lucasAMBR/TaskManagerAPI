@@ -19,7 +19,13 @@ namespace Services{
             return await _projectRepository.GetProjectByIdAsync(id);
         }
 
-        public async Task<Project> CreateProjectAsync(string managerId,CreateProjectDTO project){
+        public async Task<List<Project>> GetAllProjectsByManagerId(string managerId)
+        {
+            return await _projectRepository.GetAllMyProjects(managerId);
+        }
+
+        public async Task<Project> CreateProjectAsync(string managerId, CreateProjectDTO project)
+        {
             Project newProject = new Project
             {
                 Name = project.Name,

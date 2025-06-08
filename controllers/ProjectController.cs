@@ -37,6 +37,20 @@ namespace Controllers{
             return await _projectService.GetProjectByIdAsync(id);
         }
 
+        [HttpGet("all-my-projects")]
+        [Authorize(Roles = "MNG")]
+        public async Task<ActionResult<List<Project>>> GetAllMyProjetcs()
+        {
+            var managerIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (managerIdFromToken == null)
+            {
+                return Unauthorized("Only managers can create a project");
+            }
+
+            return await _projectService.GetAllProjectsByManagerId(managerIdFromToken);
+        }
+
         /// <summary>
         /// Cria um projeto
         /// </summary>

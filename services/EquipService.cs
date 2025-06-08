@@ -19,7 +19,18 @@ namespace Services{
             return await _equipRepository.GetByIdAsync(id);
         }
 
-        public async Task<Equip> CreateEquipAsync(string managerId, CreateEquipDTO equip){
+        public async Task<List<Equip>> GetAllEquipsByProjectId(string projectId)
+        {
+            return await _equipRepository.GetAllEquipsByProjectId(projectId);
+        }
+
+        public async Task<List<Equip>> GetAllEquipsByDevId(string devId)
+        {
+            return await _equipRepository.GetAllEquipsByDevId(devId);
+        }
+
+        public async Task<Equip> CreateEquipAsync(string managerId, CreateEquipDTO equip)
+        {
             Equip newEquip = new Equip
             {
                 LeaderId = equip.LeaderId,
@@ -29,7 +40,7 @@ namespace Services{
             };
 
             newEquip.Id = $"TEAM-{DateTime.Now.ToString("yyyyMMddHHmmssff")}";
-            
+
             return await _equipRepository.AddAsync(newEquip);
         }
 

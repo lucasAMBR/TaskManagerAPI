@@ -16,8 +16,18 @@ namespace Repositories{
             return await _context.Equips.ToListAsync();
         }
 
+        public async Task<List<Equip>> GetAllEquipsByProjectId(string projectId)
+        {
+            return await _context.Equips.Where(e => e.ProjectId == projectId).ToListAsync();
+        }
+
+        public async Task<List<Equip>> GetAllEquipsByDevId(string devId)
+        {
+            return await _context.Equips.Where(e => e.Members.Any(m => m.Id == devId)).ToListAsync();
+        }
         
-        public async Task<Equip> GetByIdAsync(string id){
+        public async Task<Equip> GetByIdAsync(string id)
+        {
             return await _context.Equips
                 .Include(e => e.Project)
                 .Include(e => e.Members)
