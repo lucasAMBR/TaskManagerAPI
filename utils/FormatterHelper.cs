@@ -9,12 +9,12 @@ namespace Formatter
         {
             if (equipData.Leader == null)
             {
-                throw new Exception("Leader not found");
+                throw new Exception("Error: Could not locate team leader.");
             }
 
             if (equipData.Project == null)
             {
-                throw new Exception("cannot find this project");
+                throw new Exception("Error: The specified project doesn't exist.");
             }
 
             EquipResponseDTO equipFormated = new EquipResponseDTO
@@ -35,7 +35,7 @@ namespace Formatter
         {
             if (task.Equip == null)
             {
-                throw new Exception("Cannot found this equip");
+                throw new Exception("Error: Team not found.");
             }
 
             FormattedTaskDTO newFormTask = new FormattedTaskDTO

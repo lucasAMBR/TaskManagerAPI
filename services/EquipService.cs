@@ -49,12 +49,12 @@ namespace Services{
 
             if (foundedEquip.Project == null)
             {
-                throw new Exception("You can not update a equip that does not exist!");
+                throw new Exception("Error: The specified team was not found.");
             }
 
             if (foundedEquip.Project.ManagerId != managerId)
             {
-                throw new Exception("You can not update someone else's equip");
+                throw new Exception("You can only update teams you manage.");
             }
 
             if (equip.LeaderId != null){
@@ -79,12 +79,12 @@ namespace Services{
 
             if (equipWithManager.Project == null)
             {
-                throw new Exception("You can not delete a equip that does not exist!");
+                throw new Exception("Error: The specified team was not found.");
             }
 
             if (equipWithManager.Project.ManagerId != managerId)
             {
-                throw new Exception("You can not delete someone else's equip");
+                throw new Exception("Team removal permissions are owner-exclusive.");
             }
 
             return await _equipRepository.DeleteAsync(equipWithManager);

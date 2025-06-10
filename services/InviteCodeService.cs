@@ -27,18 +27,18 @@ namespace Services
             {
                 if (userId != equip.LeaderId)
                 {
-                    throw new Exception("Only the leader and the project manager can generate a invite");
+                    throw new Exception("Only team leaders and project managers can generate invites.");
                 }
             }
             if (userRole == "MNG")
             {
                 if (equip.Project == null)
                 {
-                    throw new Exception("Invites can only be generated for existent project equips");
+                    throw new Exception("You can only generate invites for existing project teams.");
                 }
                 if (userId != equip.Project.ManagerId)
                 {
-                    throw new Exception("Only the leader and the project manager can generate a invite");
+                    throw new Exception("Invite generation is restricted to team leaders and project managers.");
                 }
             }
 

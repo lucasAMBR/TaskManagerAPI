@@ -28,7 +28,7 @@ namespace Controllers{
             var response = await _authService.LoginAsync(loginData.Email, loginData.Password);
 
             if(response == null){
-                return NotFound("User not found!");
+                return NotFound("User not found.");
             }
 
             return response;

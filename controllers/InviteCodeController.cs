@@ -37,7 +37,7 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged to generate a invite code");
+                return Unauthorized("Please sign in to create invitation codes.");
             }
 
             if (User.IsInRole("MNG"))
@@ -50,7 +50,7 @@ namespace Controllers
             }
             else
             {
-                return "You must be logged in";
+                return "You must be logged in to access this feature.";
             }
         }
 
@@ -73,14 +73,14 @@ namespace Controllers
 
             if (devIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to enter in a equip");
+                return Unauthorized("You must be logged in to join a team.");
             }
 
             var addedToEquip = await _inviteCodeService.UseInviteCode(devIdFromToken, code);
 
             if (!addedToEquip)
             {
-                return BadRequest("You can not be added to this equip");
+                return BadRequest("You cannot be added to this team.");
             }
             
             return NoContent();

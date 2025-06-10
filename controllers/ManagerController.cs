@@ -66,7 +66,7 @@ namespace Controllers{
 
             if (await _managerService.VerifyEmail(manager.Email))
             {
-                return Conflict("E-mail already in use");
+                return Conflict("This email address is already registered.");
             }
 
             var created = await _managerService.CreateManagerAsync(manager);
@@ -103,14 +103,14 @@ namespace Controllers{
 
             if (id != managerIdFromToken)
             {
-                return BadRequest("You can not update someone else's information!!");
+                return BadRequest("User information can only be modified by the account owner.");
             }
 
             var updated = await _managerService.UpdateManagerAsync(id, manager);
 
             if (updated == null)
             {
-                return NotFound("User not Found!!");
+                return NotFound("User not found.");
             }
 
             return NoContent();
@@ -134,14 +134,14 @@ namespace Controllers{
 
             if (managerIdFromToken != id)
             {
-                Forbid("You can not delete someone else's account");
+                Forbid("You can only delete your own account.");
             }
 
             var deleted = await _managerService.DeleteManagerAsync(id);
 
             if (!deleted)
             {
-                return NotFound("User not found!!");
+                return NotFound("User not found.");
             }
 
             return NoContent();

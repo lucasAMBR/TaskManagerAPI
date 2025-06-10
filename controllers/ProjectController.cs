@@ -45,7 +45,7 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("Only managers can create a project");
+                return Unauthorized("Only managers can create new projects.");
             }
 
             return await _projectService.GetAllProjectsByManagerId(managerIdFromToken);
@@ -73,7 +73,7 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("Only managers can create a project");
+                return Unauthorized("Only managers can create new projects.");
             }
 
             var created = await _projectService.CreateProjectAsync(managerIdFromToken, project);
@@ -108,19 +108,19 @@ namespace Controllers{
 
             if (managerTokenFromBody == null)
             {
-                return Unauthorized("Only managers can update a project");
+                return Unauthorized("Only managers can uptade projects.");
             }
 
             if (foundedProject.ManagerId != managerTokenFromBody)
             {
-                return Unauthorized("You only can update your projects");
+                return Unauthorized("You can only update your own projects.");
             }
 
             var updated = await _projectService.UpdateProjectAsync(id, project);
 
             if (updated == null)
             {
-                return NotFound("Project not Found!!");
+                return NotFound("Project not Found.");
             }
 
             return NoContent();
@@ -147,19 +147,19 @@ namespace Controllers{
 
             if (managerTokenFromBody == null)
             {
-                return Unauthorized("Only managers can delete a project");
+                return Unauthorized("Only managers can delete projects.");
             }
 
             if (foundedProject.ManagerId != managerTokenFromBody)
             {
-                return Unauthorized("You only can delete your projects");
+                return Unauthorized("You can only delete your own projects.");
             }
 
             var deleted = await _projectService.DeleteProjectAsync(id);
 
             if (!deleted)
             {
-                return NotFound("Project not found!!");
+                return NotFound("Project not found.");
             }
 
             return NoContent();

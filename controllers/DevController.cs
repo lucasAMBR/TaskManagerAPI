@@ -64,7 +64,7 @@ namespace Controllers{
         public async Task<ActionResult<DevResponseDTO>> Create(CreateDevDTO dev){
             if (await _devService.GetByEmailAsync(dev.Email))
             {
-                return Conflict("E-mail already in use!");
+                return Conflict("This email address is already registered.");
              }
 
             var created = await _devService.CreateDevAsync(dev);
@@ -101,12 +101,12 @@ namespace Controllers{
 
             if (devIdFromToken == null)
             {
-                return Unauthorized("You must be logged to update your account information");
+                return Unauthorized("Please log in to update your account information.");
             }
 
             if (devIdFromToken != id)
             {
-                return Forbid("You can only update YOUR account information");
+                return Forbid("Only the account owner can modify this information.");
             }
 
             var update = await _devService.UpdateDevAsync(devIdFromToken, dev);
@@ -137,7 +137,7 @@ namespace Controllers{
 
             if (devIdFromToken != id)
             {
-                return Unauthorized("You can only delete YOUR account");
+                return Unauthorized("For security reasons, only you can delete your account.");
             }
 
             var deleted = await _devService.DeleteDevAsync(devIdFromToken);

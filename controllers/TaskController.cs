@@ -53,14 +53,14 @@ namespace Controllers
             {
                 if (!isMember)
                 {
-                    return Unauthorized("You can not see a task in a someone else's equip!");
+                    return Unauthorized("You cannot view tasks in another user's team.");
                 }
             }
             if (User.IsInRole("MNG"))
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Unauthorized("You can not see a task in a someone elses's equip!");
+                    return Unauthorized("You cannot view tasks in another user's team.");
                 }
             }
 
@@ -87,7 +87,7 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to see your tasks");
+                return Unauthorized("Please sign in to access your task list.");
             }
 
             var rawList = await _taskService.GetTasksByUserId(userIdFromToken);
@@ -120,7 +120,7 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to create a task");
+                return Unauthorized("You must be logged in to view your tasks.");
             }
 
             Equip equip = await _equipService.GetEquipByIdAsync(equipId);
@@ -129,7 +129,7 @@ namespace Controllers
             {
                 if (userIdFromToken != equip.LeaderId)
                 {
-                    return Unauthorized("You aren't the leader of this equip");
+                    return Unauthorized("Only the team leader can perform this action.");
                 }
             }
 
@@ -137,11 +137,11 @@ namespace Controllers
             {
                 if (equip.Project == null)
                 {
-                    return BadRequest("Project does not exist");
+                    return BadRequest("Project not found.");
                 }
                 if (userIdFromToken != equip.Project.ManagerId)
                 {
-                    return Unauthorized("You aren't the leader of this equip");
+                    return Unauthorized("Only team leaders can perform this action.");
                 }
             }
 
@@ -171,7 +171,7 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to create a task");
+                return Unauthorized("You must be logged in to create tasks.");
             }
 
             Models.Task task = await _taskService.GetByIdAsync(taskId);
@@ -193,14 +193,14 @@ namespace Controllers
                     }
                     if (task.AssigneeId != null)
                     {
-                        return BadRequest("This task is already assigned");
+                        return BadRequest("This task is already assigned.");
                     }
 
                     bool autoAssigned = await _taskService.AssignTaskAsync(taskId, devId);
 
                     if (!autoAssigned)
                     {
-                        return BadRequest("Somthing went wrong during assignment");
+                        return BadRequest("Task assignment failed.");
                     }
 
                     return NoContent();
@@ -208,7 +208,7 @@ namespace Controllers
 
                 if (!isLeader)
                 {
-                    return Unauthorized("You aren't the leader of this equip");
+                    return Unauthorized("Only equipment leaders can perform this action.");
                 }
             }
 
@@ -216,11 +216,11 @@ namespace Controllers
             {
                 if (equip.Project == null)
                 {
-                    return BadRequest("Project does not exist");
+                    return BadRequest("Project not found.");
                 }
                 if (!isManager)
                 {
-                    return Unauthorized("You aren't the manager of this project");
+                    return Unauthorized("Only project managers can perform this action.");
                 }
             }
 
@@ -228,7 +228,7 @@ namespace Controllers
 
             if (!assigned)
             {
-                return BadRequest("Somthing went wrong during the assignment");
+                return BadRequest("Task assignment failed.");
             }
 
             return NoContent();
@@ -258,21 +258,21 @@ namespace Controllers
 
             if (userIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to conclude a task");
+                return Unauthorized("Please sign in to complete your tasks.");
             }
 
             Models.Task task = await _taskService.GetByIdAsync(taskId);
 
             if (userIdFromToken != task.AssigneeId)
             {
-                return BadRequest("You can not end someone else's task");
+                return BadRequest("You can only complete your own assigned tasks.");
             }
 
             var isConcluded = await _taskService.ConcludeTaskAsync(taskId);
 
             if (!isConcluded)
             {
-                return BadRequest("Something went wrong in conclusion");
+                return BadRequest("Task conclusion failed.");
             }
 
             var conclusionNote = await _conclusionNoteService.GenerateConclusionNote(taskId, note);

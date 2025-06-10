@@ -56,7 +56,7 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to create a equip");
+                return Unauthorized("You must be logged in to create a team.");
             }
 
             return await _equipService.GetAllEquipsByProjectId(projectId);
@@ -71,7 +71,7 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to create a equip");
+                return Unauthorized("You must be logged in to create a team.");
             }
 
             return await _equipService.GetAllEquipsByDevId(managerIdFromToken);
@@ -101,7 +101,7 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("You must be logged in to create a equip");
+                return Unauthorized("You must be logged in to create a team.");
             }
 
             var created = await _equipService.CreateEquipAsync(managerIdFromToken, equip);
@@ -110,7 +110,7 @@ namespace Controllers{
 
             if (!addResult)
             {
-                return BadRequest("Something went wrong when adding a member to the team");
+                return BadRequest("We encountered an error while adding this member to the team.");
             }
 
             return Ok(FormatterHelper.EquipFormater(created));
@@ -141,14 +141,14 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("You must be logged to update a equip");
+                return Unauthorized("You must be logged in to update team information.");
             }
 
             var updated = await _equipService.UpdateEquipAsync(managerIdFromToken, id, equip);
 
             if (updated == null)
             {
-                return NotFound("Equip not Found!!");
+                return NotFound("The requested team could not be found.");
             }
 
             return NoContent();
@@ -172,14 +172,14 @@ namespace Controllers{
 
             if (managerIdFromToken == null)
             {
-                return Unauthorized("You must be logged to delete a equip");
+                return Unauthorized("You must be logged in to delete a team.");
             }
 
             var deleted = await _equipService.DeleteEquipAsync(managerIdFromToken, id);
 
             if (!deleted)
             {
-                return NotFound("Equip not found!!");
+                return NotFound("The requested team could not be found.");
             }
 
             return NoContent();
@@ -205,7 +205,7 @@ namespace Controllers{
 
             if (equip.Project == null)
             {
-                return BadRequest("You cannot add a member in a equip that does not exists");
+                return BadRequest("Error: The specified team was not found.");
             }
 
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -214,7 +214,7 @@ namespace Controllers{
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Forbid("Only the manager of the project can add members");
+                    return Forbid("Member addition is restricted to project managers.");
                 }
             }
 
@@ -222,7 +222,7 @@ namespace Controllers{
             {
                 if (equip.LeaderId != userIdFromToken)
                 {
-                    return Forbid("Only the Leader can add members");
+                    return Forbid("Member addition is restricted to team leaders.");
                 }
             }
 
@@ -230,7 +230,7 @@ namespace Controllers{
 
             if (!addResult)
             {
-                return BadRequest("Invalid Equip ID or Dev ID");
+                return BadRequest("Error: The provided Team/Device ID is not valid.");
             }
 
             return NoContent();
@@ -252,7 +252,7 @@ namespace Controllers{
 
             if (equip.Project == null)
             {
-                return BadRequest("You can not add a member in a equip that does not exist.");
+                return BadRequest("Error: Cannot add members to non-existent team.");
             }
 
             var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -261,7 +261,7 @@ namespace Controllers{
             {
                 if (equip.Project.ManagerId != userIdFromToken)
                 {
-                    return Forbid("Only the manager can remove members");
+                    return Forbid("Only managers can remove team members.");
                 }
             }
 
@@ -269,7 +269,7 @@ namespace Controllers{
             {
                 if (equip.LeaderId != userIdFromToken)
                 {
-                    return Forbid("Only the Leader can remove members");
+                    return Forbid("Member removal is restricted to team leaders.");
                 }
             }
             
@@ -277,7 +277,7 @@ namespace Controllers{
 
             if (!removeResult)
             {
-                return BadRequest("Invalid Equip ID or Dev ID");
+                return BadRequest("Invalid Team ID or Device ID.");
             }
 
             return NoContent();
