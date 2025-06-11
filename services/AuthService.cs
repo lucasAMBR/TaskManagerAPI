@@ -25,6 +25,7 @@ namespace Services{
 
                 return new LoginResultDTO{
                     Token = token,
+                    Id = manager.Id,
                     Name = manager.Name,
                     Role = "MNG"
                 };
@@ -38,6 +39,7 @@ namespace Services{
                 return new LoginResultDTO
                 {
                     Token = token,
+                    Id = dev.Id,
                     Name = dev.Name,
                     Role = "DEV"
                 };
