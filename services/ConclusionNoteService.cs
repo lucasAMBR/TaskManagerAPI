@@ -11,7 +11,7 @@ namespace Services
 
         public ConclusionNoteService(IConclusionNoteRepository conclusionNoteRepository)
         {
-            _conclusionNoteRepository = conclusionNoteRepository;    
+            _conclusionNoteRepository = conclusionNoteRepository;
         }
 
         public async Task<ConclusionNote> GenerateConclusionNote(string taskId, CreateConclusionNoteDTO note)
@@ -26,6 +26,11 @@ namespace Services
             };
 
             return await _conclusionNoteRepository.GenerateConclusionNote(newNote);
+        }
+
+        public async Task<List<ConclusionNote>> ListAllConclusionNotesByEquipId(string equipId)
+        {
+            return await _conclusionNoteRepository.GetConclusionNotesByEquipId(equipId);
         }
     }
 }

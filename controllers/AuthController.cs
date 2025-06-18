@@ -1,16 +1,19 @@
 using DTOs;
 using Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Controllers{
-    
+
     [ApiController]
     [Route("api/auth")]
-    public class AuthController : ControllerBase{
+    public class AuthController : ControllerBase
+    {
 
         private readonly IAuthService _authService;
 
-        public AuthController(IAuthService authService){
+        public AuthController(IAuthService authService)
+        {
             _authService = authService;
         }
 
@@ -24,15 +27,25 @@ namespace Controllers{
         /// </param>
         /// <returns>Um objeto com o Token JWT do usuario, o nome dele, e sua ROLE (DEV ou MNG)</returns>
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResultDTO>> Login(LoginRequestDTO loginData){
+        public async Task<ActionResult<LoginResultDTO>> Login(LoginRequestDTO loginData)
+        {
             var response = await _authService.LoginAsync(loginData.Email, loginData.Password);
 
-            if(response == null){
+            if (response == null)
+            {
                 return NotFound("User not found.");
             }
 
             return response;
         }
 
+        [HttpGet("validate_token")]
+        [Authorize]
+        #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<IActionResult> ValidateToken()
+        #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        {
+            return NoContent();
+        }
     }
 }

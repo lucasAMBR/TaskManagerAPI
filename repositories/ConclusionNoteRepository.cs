@@ -1,5 +1,6 @@
 using Data;
 using Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Models;
 
 namespace Repositories
@@ -18,6 +19,13 @@ namespace Repositories
             _context.ConclusionNotes.Add(note);
             await _context.SaveChangesAsync();
             return note;
+        }
+
+        public async Task<List<ConclusionNote>> GetConclusionNotesByEquipId(string equipId) {
+                return await _context.ConclusionNotes
+                    .Include(cn => cn.Task)
+                    .Where(cn => cn.Task != null && cn.Task.EquipId == equipId)
+                    .ToListAsync();
         }
     }
 }
